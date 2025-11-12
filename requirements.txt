@@ -1,0 +1,26 @@
+# Core
+pandas>=2.2,<3.0
+openpyxl>=3.1,<4.0
+
+# LangChain Core & Community Modules
+langchain>=0.2.6,<0.3.0
+langchain-community>=0.2.6,<0.3.0
+
+# Embeddings & Vector DB
+chromadb>=0.5,<0.6
+sentence-transformers>=2.6,<3.0
+huggingface-hub>=0.23,<1.0
+
+# LLM & Chat
+ollama>=0.1.8
+langchain-ollama>=0.1.1
+
+# Document Loaders (Unstructured, PDF, DOCX, PPTX, XLSX)
+pypdf>=4.0,<5.0
+docx2txt>=0.8,<1.0
+unstructured>=0.15,<0.16
+unstructured[local-inference]>=0.15,<0.16
+
+# Utilities
+tqdm>=4.66,<5.0
+requests>=2.32,<3.0
