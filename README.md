@@ -245,11 +245,3 @@ PRs are welcome!
 Feature suggestions are welcome!
 
 ---
-
-
-
-Just say:
-
-👉 **“Add GitHub badges and banner”**
-or
-👉 **“Let’s deploy to HuggingFace next”**
