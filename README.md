@@ -1,7 +1,5 @@
 
 
-#  **Title:**
-
 ### **Advanced RAG Chatbot – LangChain, Chroma, Groq, FastAPI, Streamlit**
 
 ---
