@@ -1,0 +1,12 @@
+env/
+.venv/
+venv/
+ENV/
+__pycache__/
+*.pyd
+*.dll
+*.so
+*.bin
+*.log
+*.sqlite3
+CoE_Knowledge_Base/
