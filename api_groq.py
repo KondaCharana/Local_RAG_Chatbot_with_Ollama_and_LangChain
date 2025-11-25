@@ -7,11 +7,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from langchain_core.prompts import ChatPromptTemplate
 
+from dotenv import load_dotenv
+load_dotenv()  
+
 # ---- import your existing RAG functions ----
 from chatbot_test1 import (
     get_or_create_coe_vector_db,
-    COE_DOCS_SOURCE_DIR,
-    COE_AI_DB_DIR
+    
 )
 
 # ---- Load Vector DB ----
@@ -44,10 +46,11 @@ app.add_middleware(
 )
 
 # ---- Groq Config ----
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_MODEL_NAME = "llama-3.1-8b-instant"   # most stable free one
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_MODEL_NAME = os.getenv("GROQ_MODEL_NAME")
 
+COE_DOCS_SOURCE_DIR = os.getenv("COE_DOCS_SOURCE_DIR")
+COE_AI_DB_DIR = os.getenv("COE_AI_DB_DIR")
 
 # ---- Groq API Call ----
 def call_groq(prompt):
