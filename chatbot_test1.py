@@ -1,12 +1,16 @@
 import os
 from langchain_community.document_loaders import TextLoader, PyPDFLoader, Docx2txtLoader,UnstructuredPowerPointLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+#from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_community.chat_models import ChatOllama # For connecting to local Ollama models
-from langchain.prompts import ChatPromptTemplate, PromptTemplate
-from langchain.schema.runnable import RunnablePassthrough
-from langchain.schema import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+#from langchain.schema.runnable import RunnablePassthrough
+from langchain_core.runnables import RunnablePassthrough
+#from langchain.schema import StrOutputParser
+from langchain_core.output_parsers import StrOutputParser
+
 
 # --- Configuration ---
 COE_AI_DB_DIR = "CoE_Knowledge_Base"

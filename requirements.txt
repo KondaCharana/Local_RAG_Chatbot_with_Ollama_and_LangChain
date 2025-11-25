@@ -1,26 +1,13 @@
-# Core
-pandas>=2.2,<3.0
-openpyxl>=3.1,<4.0
+fastapi
+uvicorn
+requests
+pydantic
+python-multipart
 
-# LangChain Core & Community Modules
-langchain>=0.2.6,<0.3.0
-langchain-community>=0.2.6,<0.3.0
+langchain
+langchain-community
 
-# Embeddings & Vector DB
-chromadb>=0.5,<0.6
-sentence-transformers>=2.6,<3.0
-huggingface-hub>=0.23,<1.0
+chromadb==0.4.22   # works without pyarrow on Windows
+sentence-transformers
 
-# LLM & Chat
-ollama>=0.1.8
-langchain-ollama>=0.1.1
-
-# Document Loaders (Unstructured, PDF, DOCX, PPTX, XLSX)
-pypdf>=4.0,<5.0
-docx2txt>=0.8,<1.0
-unstructured>=0.15,<0.16
-unstructured[local-inference]>=0.15,<0.16
-
-# Utilities
-tqdm>=4.66,<5.0
-requests>=2.32,<3.0
+streamlit
