@@ -127,18 +127,16 @@ Below is the RAG architecture used in both versions:
 pip install -r requirements.txt
 ```
 
-## 2️ Set up Groq API key
+## 2️ Environment Setup
+pip install python-dotenv
 
-Windows:
+Create a .env file:
 
-```
-setx GROQ_API_KEY "your_key_here"
-```
+GROQ_API_KEY=your_key
+COE_DOCS_SOURCE_DIR=CoE_Work_Docs
+COE_AI_DB_DIR=CoE_Knowledge_Base
+GROQ_MODEL_NAME=llama-3.1-8b-instant
 
-macOS/Linux:
-
-```
-export GROQ_API_KEY="your_key_here"
 ```
 
 ## 3️ Start FastAPI backend
