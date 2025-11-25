@@ -10,3 +10,4 @@ __pycache__/
 *.log
 *.sqlite3
 CoE_Knowledge_Base/
+.env
