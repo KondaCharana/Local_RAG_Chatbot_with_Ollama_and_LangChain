@@ -1,0 +1,10 @@
+
+            Course Name: Advanced Python for Data Science
+            Instructor: Dr. Anya Sharma
+            Duration: 8 weeks
+            Schedule: Tuesdays & Thursdays, 6 PM - 8 PM (Online)
+            Prerequisites: Intermediate Python, basic statistics
+            Content: Covers Pandas, NumPy, Scikit-learn, Matplotlib, and an introduction to deep learning with TensorFlow.
+            Certification: Certificate of Completion upon successful project submission.
+            Next Start Date: September 15, 2024
+            
