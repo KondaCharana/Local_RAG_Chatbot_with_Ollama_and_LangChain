@@ -7,7 +7,7 @@ python-multipart
 langchain
 langchain-community
 
-chromadb==0.4.22   # works without pyarrow on Windows
+chromadb==0.4.22
 sentence-transformers
 
 streamlit

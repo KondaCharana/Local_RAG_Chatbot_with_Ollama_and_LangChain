@@ -1,114 +1,69 @@
 # api_groq.py
 import os
+import time
+import logging
 import requests
+from typing import List
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from dotenv import load_dotenv
-load_dotenv()  
+# -------------------------------------------------
+# Logging (Cloud Run automatically captures stdout)
+# -------------------------------------------------
+logging.basicConfig(level=logging.INFO)
+logging.info("🚀 Starting CoE RAG API")
 
-# ---- import your existing RAG functions ----
-from chatbot_test1 import (
-    get_or_create_coe_vector_db,
-    
+# -------------------------------------------------
+# Environment variables (Cloud Run injects these)
+# -------------------------------------------------
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_MODEL_NAME = os.getenv("GROQ_MODEL_NAME", "llama3.1")
+GROQ_API_URL = os.getenv(
+    "GROQ_API_URL",
+    "https://api.groq.com/openai/v1/chat/completions"
 )
 
-# ---- Load Vector DB ----
-vector_db = get_or_create_coe_vector_db(COE_DOCS_SOURCE_DIR, COE_AI_DB_DIR)
-retriever = vector_db.as_retriever(search_kwargs={"k": 3})
+COE_DOCS_SOURCE_DIR = os.getenv("COE_DOCS_SOURCE_DIR")
+COE_AI_DB_DIR = os.getenv("COE_AI_DB_DIR")
 
-# ---- Prompt template ----
-rag_prompt_template = ChatPromptTemplate.from_template("""
-You are an AI assistant for the Center of Excellence AI Team.
-You must answer ONLY using this context.  
-If answer not found → say "Not enough info."
+if not GROQ_API_KEY:
+    logging.warning("⚠️ GROQ_API_KEY is not set")
 
-Context:
-{context}
-
-Question:
-{question}
-""")
-
-# ---- FastAPI APP ----
+# -------------------------------------------------
+# FastAPI App
+# -------------------------------------------------
 app = FastAPI(title="CoE RAG using Groq")
 
-# ---- CORS (allow Streamlit to talk to backend) ----
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # tighten in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ---- Groq Config ----
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-GROQ_MODEL_NAME = os.getenv("GROQ_MODEL_NAME")
+logging.info("✅ FastAPI app created")
 
-COE_DOCS_SOURCE_DIR = os.getenv("COE_DOCS_SOURCE_DIR")
-COE_AI_DB_DIR = os.getenv("COE_AI_DB_DIR")
+# -------------------------------------------------
+# Lazy RAG objects (CRITICAL for Cloud Run)
+# -------------------------------------------------
+vector_db = None
+retriever = None
 
-# ---- Groq API Call ----
-def call_groq(prompt):
-    headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
-        "Content-Type": "application/json"
-    }
+def get_retriever():
+    """
+    Lazily initialize vector DB & retriever.
+    Prevents Cloud Run startup timeout.
+    """
+    global vector_db, retriever
 
-    payload = {
-        "model": GROQ_MODEL_NAME,
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.0,
-    }
+    if retriever is None:
+        logging.info("📚 Initializing vector database...")
+        from chatbot_test1 import get_or_create_coe_vector_db
 
-    response = requests.post(GROQ_API_URL, json=payload, headers=headers)
-    data = response.json()
-
-    try:
-        return data["choices"][0]["message"]["content"]
-    except:
-        return str(data)
-
-
-# ---- Request & Response Models ----
-class AskRequest(BaseModel):
-    question: str
-
-class AskResponse(BaseModel):
-    answer: str
-    sources: list
-
-
-# ---- MAIN RAG ENDPOINT ----
-@app.post("/ask", response_model=AskResponse)
-def ask_question(req: AskRequest):
-
-    # 1) Retrieve docs
-    docs = retriever.invoke(req.question)
-
-    context_list = []
-    sources = []
-
-    for d in docs:
-        meta = d.metadata or {}
-        source = meta.get("source", "Unknown")
-        context_list.append(f"[{source}] {d.page_content}")
-        sources.append({"source": source, "content": d.page_content})
-
-    final_context = "\n\n".join(context_list)
-
-    # 2) Build prompt
-    prompt = rag_prompt_template.format_prompt(
-        context=final_context, 
-        question=req.question
-    ).to_string()
-
-    # 3) Call Groq
-    answer = call_groq(prompt)
-
-    # 4) Return both
-    return AskResponse(answer=answer, sources=sources)
+        vector_db = get_or_create_coe_vector_db(
+            COE_DOCS_SOURCE_DIR,
